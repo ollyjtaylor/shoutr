@@ -10,10 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_27_164704) do
+ActiveRecord::Schema.define(version: 2020_01_27_185253) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "likes", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "shout_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["shout_id"], name: "index_likes_on_shout_id"
+    t.index ["user_id", "shout_id"], name: "index_likes_on_user_id_and_shout_id", unique: true
+    t.index ["user_id"], name: "index_likes_on_user_id"
+  end
+
+  create_table "photo_shouts", force: :cascade do |t|
+    t.string "image_file_name", null: false
+    t.string "image_content_type", null: false
+    t.bigint "image_file_size", null: false
+    t.datetime "image_updated_at", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "shouts", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -44,5 +63,7 @@ ActiveRecord::Schema.define(version: 2020_01_27_164704) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  add_foreign_key "likes", "shouts"
+  add_foreign_key "likes", "users"
   add_foreign_key "shouts", "users"
 end
